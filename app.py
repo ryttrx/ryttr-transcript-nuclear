@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Header
 from pydantic import BaseModel
-import subprocess, tempfile, glob, os, re, shutil
+import subprocess, tempfile, glob, os, re
 
 app = FastAPI()
 
@@ -18,7 +18,7 @@ def ok_api_key(x_api_key: str):
         raise HTTPException(status_code=401, detail="Invalid API key")
 
 # ----------------------
-# Your NuclearDuplicateRemoval (shortened to reuse your Colab logic)
+# NuclearDuplicateRemoval (simplified from your Colab)
 # ----------------------
 class NuclearDuplicateRemoval:
     def _parse_srt(self, content):
@@ -59,12 +59,11 @@ class NuclearDuplicateRemoval:
         return out
 
 # ----------------------
-# Route 1: basic transcripts (youtube-transcript-api style)
+# Route 1: simple placeholder
 # ----------------------
 @app.post("/transcripts")
 def transcripts(req: TranscriptRequest, x_api_key: str = Header(None)):
     ok_api_key(x_api_key)
-    # This is still your placeholder logic
     return {"ok": True, "message": "Default transcripts endpoint (limited)"}
 
 # ----------------------
@@ -100,8 +99,8 @@ def transcripts_with_ytdlp(req: TranscriptRequest, x_api_key: str = Header(None)
         return {
             "ok": True,
             "segment_count": len(clean_segments),
-            "segments": clean_segments[:20],  # sample only
+            "segments": clean_segments[:20],  # first 20 only
             "full_text": " ".join([s["text"] for s in clean_segments]),
-            "stdout_tail": p.stdout[-500:],
-            "stderr_tail": p.stderr[-500:]
+            "stdout_tail": p.stdout[-300:],
+            "stderr_tail": p.stderr[-300:]
         }
